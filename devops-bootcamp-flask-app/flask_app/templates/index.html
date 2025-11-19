@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- Registration Form -->
+    <div class="col-md-6">
+        <h2>Register User</h2>
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="bio" class="form-label">Bio</label>  <!-- NEW FIELD -->
+                <textarea class="form-control" id="bio" name="bio" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+
+    <!-- Add Post Form -->
+    <div class="col-md-6">
+        <h2>Add Post</h2>
+        <form method="POST" action="{{ url_for('add_post') }}">
+            <div class="mb-3">
+                <label for="user_id" class="form-label">User</label>
+                <select class="form-control" id="user_id" name="user_id" required>
+                    <option value="">Select a user</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Add Post</button>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+<div class="row mt-4">
+    <!-- Registered Users -->
+    <div class="col-md-6">
+        <h2>Registered Users</h2>
+        {% if users %}
+            <div class="list-group">
+                {% for user in users %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">{{ user.name }}</h5>
+                    <p class="mb-1"><strong>Email:</strong> {{ user.email }}</p>
+                    <p class="mb-1"><strong>Bio:</strong> {{ user.bio or 'No bio provided' }}</p>  <!-- NEW FIELD DISPLAY -->
+                    <small>Registered: {{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No users registered yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Posts Display -->
+    <div class="col-md-6">
+        <h2>Latest Posts (Last 5)</h2>  <!-- CHANGED DISPLAY -->
+        {% if posts %}
+            <div class="list-group">
+                {% for post in posts %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">{{ post.title }}</h5>
+                    <p class="mb-1">{{ post.content }}</p>
+                    <small>
+                        By: {{ post.author.name }} | 
+                        Posted: {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}  <!-- TIMESTAMP DISPLAY -->
+                    </small>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No posts yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
